@@ -76,5 +76,61 @@ namespace F1Api.Test.Acceptance.Features
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
+
+        [Test]
+        public async Task GetCircuitSummaries_ReturnsAllCircuitSummaries()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/summaries");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var summaries = await response.Content.ReadFromJsonAsync<List<CircuitSummary>>(_jsonOptions);
+            Assert.That(summaries, Is.Not.Null);
+            Assert.That(summaries.Count, Is.EqualTo(3));
+
+            // Verify basic properties for each summary
+            Assert.That(summaries.Any(s => s.Name == "Monaco Circuit"), Is.True);
+            Assert.That(summaries.Any(s => s.Name == "Silverstone Circuit"), Is.True);
+            Assert.That(summaries.Any(s => s.Name == "Monza Circuit"), Is.True);
+
+            // Verify TotalRacesCompleted property exists on each circuit
+            foreach (var summary in summaries)
+            {
+                Assert.That(summary.TotalRacesCompleted, Is.GreaterThanOrEqualTo(0));
+            }
+        }
+
+        [Test]
+        public async Task GetCircuitSummaryById_ReturnsCorrectCircuitSummary()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/summaries/1");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var summary = await response.Content.ReadFromJsonAsync<CircuitSummary>(_jsonOptions);
+            Assert.That(summary, Is.Not.Null);
+            Assert.That(summary.CircuitId, Is.EqualTo(1));
+            Assert.That(summary.Name, Is.EqualTo("Monaco Circuit"));
+            Assert.That(summary.Country, Is.EqualTo("Monaco"));
+            Assert.That(summary.TotalRacesCompleted, Is.GreaterThanOrEqualTo(0));
+            
+            // Verify that summary contains additional properties
+            Assert.That(summary.FastestLapTime, Is.Not.Null.Or.Empty);
+            Assert.That(summary.FastestLapDriver, Is.Not.Null.Or.Empty);
+        }
+
+        [Test]
+        public async Task GetCircuitSummaryById_WithInvalidId_ReturnsNotFound()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/summaries/999");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
     }
 }

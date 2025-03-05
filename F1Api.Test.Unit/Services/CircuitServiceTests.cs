@@ -3,11 +3,6 @@ using F1Api.Repository;
 using F1Api.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace F1Api.Test.Unit.Services
 {
@@ -40,7 +35,7 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(expectedCircuits);
 
             // Act
-            var result = await _service.GetAllCircuitsAsync();
+            var result = await _service.GetAllAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -56,7 +51,7 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(new List<Circuit>());
 
             // Act
-            var result = await _service.GetAllCircuitsAsync();
+            var result = await _service.GetAllAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -72,7 +67,7 @@ namespace F1Api.Test.Unit.Services
                 .ThrowsAsync(expectedException);
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllCircuitsAsync());
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllAsync());
             Assert.AreEqual(expectedException.Message, ex.Message);
         }
 
@@ -96,7 +91,7 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(expectedCircuit);
 
             // Act
-            var result = await _service.GetCircuitByIdAsync(circuitId);
+            var result = await _service.GetByIdAsync(circuitId);
 
             // Assert
             Assert.NotNull(result);
@@ -113,7 +108,7 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync((Circuit)null);
 
             // Act
-            var result = await _service.GetCircuitByIdAsync(invalidId);
+            var result = await _service.GetByIdAsync(invalidId);
 
             // Assert
             Assert.Null(result);
@@ -129,8 +124,135 @@ namespace F1Api.Test.Unit.Services
                 .ThrowsAsync(expectedException);
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetCircuitByIdAsync(circuitId));
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetByIdAsync(circuitId));
             Assert.AreEqual(expectedException.Message, ex.Message);
+        }
+
+        [Test]
+        public async Task GetCircuitSummariesAsync_ShouldReturnAllCircuitSummaries()
+        {
+            // Arrange
+            var expectedSummaries = new List<CircuitSummary>
+            {
+                new CircuitSummary { 
+                    CircuitId = 1, 
+                    Name = "Monaco Circuit", 
+                    Country = "Monaco",
+                    FastestLapDriver = "Lewis Hamilton",
+                    TotalRacesCompleted = 50
+                },
+                new CircuitSummary { 
+                    CircuitId = 2, 
+                    Name = "Silverstone Circuit", 
+                    Country = "United Kingdom",
+                    FastestLapDriver = "Max Verstappen",
+                    TotalRacesCompleted = 50
+                }
+            };
+
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ReturnsAsync(expectedSummaries);
+
+            // Act
+            var result = await _service.GetSummariesAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedSummaries.Count, result.Count());
+            CollectionAssert.AreEquivalent(expectedSummaries, result);
+            _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetCircuitSummariesAsync_WhenNoSummaries_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ReturnsAsync(new List<CircuitSummary>());
+
+            // Act
+            var result = await _service.GetSummariesAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(0, result.Count());
+            _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetCircuitSummariesAsync_WhenRepositoryThrowsException_ShouldPropagateException()
+        {
+            // Arrange
+            var expectedException = new Exception("Database connection error");
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ThrowsAsync(expectedException);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummariesAsync());
+            Assert.AreEqual(expectedException.Message, ex.Message);
+            _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetCircuitSummaryByIdAsync_WithValidId_ShouldReturnCircuitSummary()
+        {
+            // Arrange
+            var circuitId = 1;
+            var expectedSummary = new CircuitSummary
+            {
+                CircuitId = circuitId,
+                Name = "Monaco Circuit",
+                Country = "Monaco",
+                Location = "Monte Carlo",
+                FastestLapDriver = "Lewis Hamilton",
+                FastestLapTime = "1:12.909",
+                FastestLapRaceYear = 2021,
+                TotalRacesCompleted = 50
+            };
+
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(circuitId))
+                .ReturnsAsync(expectedSummary);
+
+            // Act
+            var result = await _service.GetSummaryByIdAsync(circuitId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(circuitId, result.CircuitId);
+            Assert.AreEqual("Monaco Circuit", result.Name);
+            Assert.AreEqual("Lewis Hamilton", result.FastestLapDriver);
+            _mockRepository.Verify(repo => repo.GetSummaryByIdAsync(circuitId), Times.Once);
+        }
+
+        [Test]
+        public async Task GetCircuitSummaryByIdAsync_WithInvalidId_ShouldReturnNull()
+        {
+            // Arrange
+            var invalidId = 999;
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(invalidId))
+                .ReturnsAsync((CircuitSummary)null);
+
+            // Act
+            var result = await _service.GetSummaryByIdAsync(invalidId);
+
+            // Assert
+            Assert.Null(result);
+            _mockRepository.Verify(repo => repo.GetSummaryByIdAsync(invalidId), Times.Once);
+        }
+
+        [Test]
+        public async Task GetCircuitSummaryByIdAsync_WhenRepositoryThrowsException_ShouldPropagateException()
+        {
+            // Arrange
+            var circuitId = 1;
+            var expectedException = new Exception("Database connection error");
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(circuitId))
+                .ThrowsAsync(expectedException);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummaryByIdAsync(circuitId));
+            Assert.AreEqual(expectedException.Message, ex.Message);
+            _mockRepository.Verify(repo => repo.GetSummaryByIdAsync(circuitId), Times.Once);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace F1Api.Models
     {
         [JsonProperty("driverId")]
         public int Id { get; set; }
-        [JsonProperty("driverRef")]
 
+        [JsonProperty("driverRef")]
         public string DriverReference { get; set; }
 
         public int? Number { get; set; }
@@ -18,7 +18,8 @@ namespace F1Api.Models
 
         public string Surname { get; set; }
 
-        public DateOnly? Dob { get; set; }
+        [JsonProperty("dob")]
+        public DateOnly? DateOfBirth { get; set; }
 
         public string Nationality { get; set; }
 

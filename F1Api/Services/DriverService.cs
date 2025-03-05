@@ -1,5 +1,7 @@
 using F1Api.Models;
 using F1Api.Repository;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace F1Api.Services
 {
@@ -14,16 +16,26 @@ namespace F1Api.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<Driver>> GetAllDriversAsync()
+        public async Task<IEnumerable<Driver>> GetAllAsync()
         {
             _logger.LogInformation("Getting all drivers");
             return await _driverRepository.GetAllAsync();
         }
 
-        public async Task<Driver> GetDriverByIdAsync(int id)
+        public async Task<Driver> GetByIdAsync(int id)
         {
             _logger.LogInformation($"Getting driver with id: {id}");
             return await _driverRepository.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<DriverSummary>> GetSummariesAsync()
+        {
+            return await _driverRepository.GetSummariesAsync();
+        }
+
+        public async Task<DriverSummary> GetSummaryByIdAsync(int id)
+        {
+            return await _driverRepository.GetSummaryByIdAsync(id);
         }
     }
 }

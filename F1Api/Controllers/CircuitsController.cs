@@ -1,11 +1,13 @@
 using F1Api.Models;
 using F1Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace F1Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class CircuitsController : ControllerBase
     {
         private readonly ICircuitService _circuitService;
@@ -18,23 +20,33 @@ namespace F1Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Circuit>>> GetCircuits()
+        public async Task<ActionResult<IEnumerable<Circuit>>> GetAllCircuits()
         {
-            _logger.LogInformation("Getting all circuits");
-            return Ok(await _circuitService.GetAllCircuitsAsync());
+            var circuits = await _circuitService.GetAllAsync();
+            return Ok(circuits);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Circuit>> GetCircuit(int id)
+        public async Task<ActionResult<Circuit>> GetCircuitById(int id)
         {
-            var circuit = await _circuitService.GetCircuitByIdAsync(id);
+            var circuit = await _circuitService.GetByIdAsync(id);
+            if (circuit == null) return NotFound();
+            return Ok(circuit);
+        }
 
-            if (circuit == null)
-            {
-                return NotFound();
-            }
+        [HttpGet("summaries")]
+        public async Task<ActionResult<IEnumerable<CircuitSummary>>> GetCircuitSummaries()
+        {
+            var summaries = await _circuitService.GetSummariesAsync();
+            return Ok(summaries);
+        }
 
-            return circuit;
+        [HttpGet("summaries/{id}")]
+        public async Task<ActionResult<CircuitSummary>> GetCircuitSummaryById(int id)
+        {
+            var summary = await _circuitService.GetSummaryByIdAsync(id);
+            if (summary == null) return NotFound();
+            return Ok(summary);
         }
     }
 }

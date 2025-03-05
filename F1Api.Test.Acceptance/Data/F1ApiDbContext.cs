@@ -11,6 +11,7 @@ namespace F1Api.Repository
         }
 
         public DbSet<Circuit> Circuits { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,17 @@ namespace F1Api.Repository
 
             modelBuilder.Entity<Circuit>()
                 .Property(c => c.Country)
+                .IsRequired();
+                
+            modelBuilder.Entity<Driver>()
+                .HasKey(d => d.Id);
+
+            modelBuilder.Entity<Driver>()
+                .Property(d => d.Forename)
+                .IsRequired();
+
+            modelBuilder.Entity<Driver>()
+                .Property(d => d.Surname)
                 .IsRequired();
 
             base.OnModelCreating(modelBuilder);

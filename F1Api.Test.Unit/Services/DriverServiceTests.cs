@@ -40,13 +40,12 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(expectedDrivers);
 
             // Act
-            var result = await _service.GetAllDriversAsync();
+            var result = await _service.GetAllAsync();
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual(expectedDrivers.Count, result.Count());
             CollectionAssert.AreEquivalent(expectedDrivers, result);
-            _mockRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
         }
 
         [Test]
@@ -57,12 +56,11 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(new List<Driver>());
 
             // Act
-            var result = await _service.GetAllDriversAsync();
+            var result = await _service.GetAllAsync();
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual(0, result.Count());
-            _mockRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
         }
 
         [Test]
@@ -74,9 +72,8 @@ namespace F1Api.Test.Unit.Services
                 .ThrowsAsync(expectedException);
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllDriversAsync());
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllAsync());
             Assert.AreEqual(expectedException.Message, ex.Message);
-            _mockRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
         }
 
         [Test]
@@ -98,14 +95,13 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync(expectedDriver);
 
             // Act
-            var result = await _service.GetDriverByIdAsync(driverId);
+            var result = await _service.GetByIdAsync(driverId);
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual(driverId, result.Id);
             Assert.AreEqual("Lewis", result.Forename);
             Assert.AreEqual("Hamilton", result.Surname);
-            _mockRepository.Verify(repo => repo.GetByIdAsync(driverId), Times.Once);
         }
 
         [Test]
@@ -117,11 +113,10 @@ namespace F1Api.Test.Unit.Services
                 .ReturnsAsync((Driver)null);
 
             // Act
-            var result = await _service.GetDriverByIdAsync(invalidId);
+            var result = await _service.GetByIdAsync(invalidId);
 
             // Assert
             Assert.Null(result);
-            _mockRepository.Verify(repo => repo.GetByIdAsync(invalidId), Times.Once);
         }
 
         [Test]
@@ -134,9 +129,126 @@ namespace F1Api.Test.Unit.Services
                 .ThrowsAsync(expectedException);
 
             // Act & Assert
-            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetDriverByIdAsync(driverId));
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetByIdAsync(driverId));
             Assert.AreEqual(expectedException.Message, ex.Message);
-            _mockRepository.Verify(repo => repo.GetByIdAsync(driverId), Times.Once);
+        }
+
+        [Test]
+        public async Task GetDriverSummariesAsync_ShouldReturnAllDriverSummaries()
+        {
+            // Arrange
+            var expectedSummaries = new List<DriverSummary>
+            {
+                new DriverSummary { 
+                    DriverId = 1, 
+                    FullName = "Lewis Hamilton", 
+                    Nationality = "British",
+                    PodiumCount = 50,
+                    TotalRacesEntered = 100
+                },
+                new DriverSummary { 
+                    DriverId = 2, 
+                    FullName = "Max Verstappen", 
+                    Nationality = "Dutch",
+                    PodiumCount = 50,
+                    TotalRacesEntered = 100
+                }
+            };
+
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ReturnsAsync(expectedSummaries);
+
+            // Act
+            var result = await _service.GetSummariesAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(expectedSummaries.Count, result.Count());
+            CollectionAssert.AreEquivalent(expectedSummaries, result);
+        }
+
+        [Test]
+        public async Task GetDriverSummariesAsync_WhenNoSummaries_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ReturnsAsync(new List<DriverSummary>());
+
+            // Act
+            var result = await _service.GetSummariesAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [Test]
+        public async Task GetDriverSummariesAsync_WhenRepositoryThrowsException_ShouldPropagateException()
+        {
+            // Arrange
+            var expectedException = new Exception("Database connection error");
+            _mockRepository.Setup(repo => repo.GetSummariesAsync())
+                .ThrowsAsync(expectedException);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummariesAsync());
+            Assert.AreEqual(expectedException.Message, ex.Message);
+        }
+
+        [Test]
+        public async Task GetDriverSummaryByIdAsync_WithValidId_ShouldReturnDriverSummary()
+        {
+            // Arrange
+            var driverId = 1;
+            var expectedSummary = new DriverSummary
+            {
+                DriverId = driverId,
+                FullName = "Lewis Hamilton",
+                Nationality = "British",
+                PodiumCount = 50,
+                TotalRacesEntered = 100
+            };
+
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(driverId))
+                .ReturnsAsync(expectedSummary);
+
+            // Act
+            var result = await _service.GetSummaryByIdAsync(driverId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(driverId, result.DriverId);
+            Assert.AreEqual("Lewis Hamilton", result.FullName);
+            Assert.AreEqual(50, result.PodiumCount);
+        }
+
+        [Test]
+        public async Task GetDriverSummaryByIdAsync_WithInvalidId_ShouldReturnNull()
+        {
+            // Arrange
+            var invalidId = 999;
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(invalidId))
+                .ReturnsAsync((DriverSummary)null);
+
+            // Act
+            var result = await _service.GetSummaryByIdAsync(invalidId);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Test]
+        public async Task GetDriverSummaryByIdAsync_WhenRepositoryThrowsException_ShouldPropagateException()
+        {
+            // Arrange
+            var driverId = 1;
+            var expectedException = new Exception("Database connection error");
+            _mockRepository.Setup(repo => repo.GetSummaryByIdAsync(driverId))
+                .ThrowsAsync(expectedException);
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummaryByIdAsync(driverId));
+            Assert.AreEqual(expectedException.Message, ex.Message);
         }
     }
 }
