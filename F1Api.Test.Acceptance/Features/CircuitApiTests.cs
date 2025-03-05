@@ -1,0 +1,80 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using F1Api.Models;
+using NUnit.Framework;
+
+namespace F1Api.Test.Acceptance.Features
+{
+    [TestFixture]
+    public class CircuitApiTests
+    {
+        private HttpClient _client;
+        private TestWebApplicationFactory _factory;
+        private readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            _factory = new TestWebApplicationFactory();
+            _client = _factory.CreateClient();
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            _client.Dispose();
+            _factory.Dispose();
+        }
+
+        [Test]
+        public async Task GetAllCircuits_ReturnsAllSeededCircuits()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var circuits = await response.Content.ReadFromJsonAsync<List<Circuit>>(_jsonOptions);
+            Assert.That(circuits, Is.Not.Null);
+            Assert.That(circuits.Count, Is.EqualTo(3));
+
+            Assert.That(circuits.Any(c => c.Name == "Monaco Circuit"), Is.True);
+            Assert.That(circuits.Any(c => c.Name == "Silverstone Circuit"), Is.True);
+            Assert.That(circuits.Any(c => c.Name == "Monza Circuit"), Is.True);
+        }
+
+        [Test]
+        public async Task GetCircuitById_ReturnsCorrectCircuit()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/1");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            var circuit = await response.Content.ReadFromJsonAsync<Circuit>(_jsonOptions);
+            Assert.That(circuit, Is.Not.Null);
+            Assert.That(circuit.Id, Is.EqualTo(1));
+            Assert.That(circuit.Name, Is.EqualTo("Monaco Circuit"));
+            Assert.That(circuit.Country, Is.EqualTo("Monaco"));
+            Assert.That(circuit.Location, Is.EqualTo("Monte Carlo"));
+        }
+
+        [Test]
+        public async Task GetCircuitById_WithInvalidId_ReturnsNotFound()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/999");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+    }
+}
