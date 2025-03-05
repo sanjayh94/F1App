@@ -13,6 +13,9 @@ namespace F1Api
             // Add services to the container.
             builder.Services.AddControllers();
 
+            builder.Services.AddHealthChecks()
+                .AddDbContextCheck<F1DbContext>("database", tags: new[] { "ready" });
+
             // Add DbContext
             builder.Services.AddDbContext<F1DbContext>(options =>
             {
@@ -43,6 +46,9 @@ namespace F1Api
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            // Health checks (Will show unhealthy if database is not ready)
+            app.MapHealthChecks("/health");
 
             // Swagger
             app.UseSwagger();
