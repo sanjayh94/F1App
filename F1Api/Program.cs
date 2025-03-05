@@ -15,39 +15,63 @@ namespace F1Api
 
             // Add DbContext
             builder.Services.AddDbContext<F1DbContext>(options =>
-                options.UseInMemoryDatabase("F1Db"));
+            {
+                // Check if we're in a test environment
+                var useInMemoryDb = builder.Configuration.GetValue<bool>("UseInMemoryDatabase");
+
+                if (useInMemoryDb)
+                {
+                    // Use in-memory database for testing
+                    options.UseInMemoryDatabase("F1Db");
+                }
+                else
+                {
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+                }
+            });
 
             // Register Repositories
             builder.Services.AddScoped<ICircuitRepository, CircuitRepository>();
             builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 
             // Register Services
-            builder.Services.AddScoped<DataLoadService>();
             builder.Services.AddScoped<ICircuitService, CircuitService>();
             builder.Services.AddScoped<IDriverService, DriverService>();
+            builder.Services.AddScoped<MigrationService>();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            // Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
 
-            // Load data on startup
-            using (var scope = app.Services.CreateScope())
+            // Check if we're in a test environment
+            var useInMemoryDb = app.Configuration.GetValue<bool>("UseInMemoryDatabase");
+
+            if (!useInMemoryDb)
             {
-                var dataLoadService = scope.ServiceProvider.GetRequiredService<DataLoadService>();
-                await dataLoadService.LoadDataAsync();
+                using var scope = app.Services.CreateScope();
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var dbContext = services.GetRequiredService<F1DbContext>();
+                    dbContext.Database.Migrate();
+
+                    var migrationService = services.GetRequiredService<MigrationService>();
+                    await migrationService.SeedDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while migrating or seeding the database");
+                }
             }
 
             await app.RunAsync();

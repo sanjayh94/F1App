@@ -17,9 +17,42 @@ namespace F1Api.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure composite keys for LapTime
-            modelBuilder.Entity<LapTime>()
-                .HasKey(lt => new { lt.RaceId, lt.DriverId, lt.Lap });
+            modelBuilder.Entity<Circuit>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired();
+                entity.Property(e => e.Country).IsRequired();
+                entity.Property(e => e.CircuitReference).IsRequired();
+            });
+
+            modelBuilder.Entity<Driver>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Forename).IsRequired();
+                entity.Property(e => e.Surname).IsRequired();
+                entity.Property(e => e.DriverReference).IsRequired();
+            });
+
+            modelBuilder.Entity<Race>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired();
+                entity.HasOne<Circuit>().WithMany().HasForeignKey(e => e.CircuitId);
+            });
+
+            modelBuilder.Entity<DriverStanding>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne<Driver>().WithMany().HasForeignKey(e => e.DriverId);
+                entity.HasOne<Race>().WithMany().HasForeignKey(e => e.RaceId);
+            });
+
+            modelBuilder.Entity<LapTime>(entity =>
+            {
+                entity.HasKey(e => new { e.RaceId, e.DriverId, e.Lap });
+                entity.HasOne<Driver>().WithMany().HasForeignKey(e => e.DriverId);
+                entity.HasOne<Race>().WithMany().HasForeignKey(e => e.RaceId);
+            });
 
             base.OnModelCreating(modelBuilder);
         }

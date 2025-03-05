@@ -124,7 +124,7 @@ namespace F1Api.Test.Acceptance
                     Code = "HAM",
                     Forename = "Lewis",
                     Surname = "Hamilton",
-                    Dob = new DateOnly(1985, 1, 7),
+                    DateOfBirth = new DateOnly(1985, 1, 7),
                     Nationality = "British",
                     Url = new Uri("https://example.com/hamilton")
                 },
@@ -136,7 +136,7 @@ namespace F1Api.Test.Acceptance
                     Code = "VER",
                     Forename = "Max",
                     Surname = "Verstappen",
-                    Dob = new DateOnly(1997, 9, 30),
+                    DateOfBirth = new DateOnly(1997, 9, 30),
                     Nationality = "Dutch",
                     Url = new Uri("https://example.com/verstappen")
                 },
@@ -148,7 +148,7 @@ namespace F1Api.Test.Acceptance
                     Code = "LEC",
                     Forename = "Charles",
                     Surname = "Leclerc",
-                    Dob = new DateOnly(1997, 10, 16),
+                    DateOfBirth = new DateOnly(1997, 10, 16),
                     Nationality = "Monegasque",
                     Url = new Uri("https://example.com/leclerc")
                 }
