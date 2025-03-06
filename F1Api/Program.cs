@@ -47,6 +47,8 @@ namespace F1Api
 
             var app = builder.Build();
 
+            app.UseHttpsRedirection();
+
             // Health checks (Will show unhealthy if database is not ready)
             app.MapHealthChecks("/health");
 
@@ -54,7 +56,6 @@ namespace F1Api
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
 
