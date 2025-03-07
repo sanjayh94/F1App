@@ -27,6 +27,8 @@ namespace F1Api.Repository
 
         public async Task<IEnumerable<CircuitSummary>> GetSummariesAsync()
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             var circuits = await _context.Circuits.ToListAsync();
             var summaries = new List<CircuitSummary>();
 
@@ -40,6 +42,8 @@ namespace F1Api.Repository
 
         public async Task<CircuitSummary> GetSummaryByIdAsync(int id)
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             var circuit = await _context.Circuits.FindAsync(id);
             if (circuit == null) return null;
 

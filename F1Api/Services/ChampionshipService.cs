@@ -26,8 +26,6 @@ namespace F1Api.Services
 
         public async Task<IEnumerable<DriverChampionshipSummary>> GetDriverChampionshipByYearAsync(int year)
         {
-            _logger.LogInformation($"Getting driver championship standings for year: {year}");
-
             var driverStandings = await _championshipRepository.GetDriverStandingsByYearAsync(year);
 
             if (!driverStandings.Any())

@@ -30,11 +30,15 @@ namespace F1Api.Services
 
         public async Task<IEnumerable<CircuitSummary>> GetSummariesAsync()
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             return await _circuitRepository.GetSummariesAsync();
         }
 
         public async Task<CircuitSummary> GetSummaryByIdAsync(int id)
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             return await _circuitRepository.GetSummaryByIdAsync(id);
         }
     }

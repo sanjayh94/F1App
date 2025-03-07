@@ -30,11 +30,15 @@ namespace F1Api.Services
 
         public async Task<IEnumerable<DriverSummary>> GetSummariesAsync()
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             return await _driverRepository.GetSummariesAsync();
         }
 
         public async Task<DriverSummary> GetSummaryByIdAsync(int id)
         {
+            // Ideally the business logic that is complex in nature should be implemented here and refactored out of the repository
+            // See the ChampionshipService for a better implementation example
             return await _driverRepository.GetSummaryByIdAsync(id);
         }
     }
