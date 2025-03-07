@@ -16,6 +16,7 @@ namespace F1Api.Controllers
         public CircuitsController(ICircuitService circuitService, ILogger<CircuitsController> logger)
         {
             _circuitService = circuitService;
+            // Ideally can use a structured logging framework like Serilog and configure sinks to the desired platform or destination such as New Relic.
             _logger = logger;
         }
 

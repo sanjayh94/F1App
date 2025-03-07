@@ -45,7 +45,7 @@ The application will automatically apply migrations and seed the database with d
 
 ## How to reach the API
 
-The API documentation is available at http://localhost:8080/swagger and can also be used to test the API using the Swagger UI.
+The API documentation is available at http://localhost:8080/swagger and can also be used to test the API using the Swagger UI. Click the appropriate endpoint and click the Try it out button. Input the correct parametersin the parameters box and click the Execute button to initiate an API call.
 
 Alternatively, the API can be reached using curl or any other HTTP client such as Postman. The following endpoints are available:
 

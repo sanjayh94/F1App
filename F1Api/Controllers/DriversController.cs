@@ -16,6 +16,7 @@ namespace F1Api.Controllers
         public DriversController(IDriverService driverService, ILogger<DriversController> logger)
         {
             _driverService = driverService;
+            // Ideally can use a structured logging framework like Serilog and configure sinks to the desired platform or destination such as New Relic.
             _logger = logger;
         }
 
