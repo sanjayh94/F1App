@@ -68,13 +68,23 @@ namespace F1Api.Test.Acceptance.Features
         }
 
         [Test]
-        public async Task GetCircuitById_WithInvalidId_ReturnsNotFound()
+        public async Task GetCircuitById_WithIdThatDoesntExist_ReturnsNotFound()
         {
             // Arrange & Act
             var response = await _client.GetAsync("/api/circuits/999");
 
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public async Task GetCircuitById_WithInvalidId_ReturnsBadRequest()
+        {
+            // Arrange & Act
+            var response = await _client.GetAsync("/api/circuits/-1");
+
+            // Assert
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
 
         [Test]

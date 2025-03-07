@@ -75,13 +75,15 @@ namespace F1Api.Test.Acceptance.Features
         }
 
         [Test]
-        public async Task GetDriverChampionshipByYear_WithInvalidYear_ReturnsNotFound()
+        public async Task GetDriverChampionshipByYear_WithInvalidYear_ReturnsBadRequest()
         {
             // Arrange & Act
             var response = await _client.GetAsync("/api/championships/1900");
 
             // Assert
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            Assert.That(errorMessage, Does.Contain("Year must be at least 1950"));
         }
 
         [Test]

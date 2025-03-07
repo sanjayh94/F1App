@@ -1,6 +1,10 @@
 using F1Api.Repository;
 using F1Api.Services;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using F1Api.Validators;
+using F1Api.Models;
 
 namespace F1Api
 {
@@ -32,6 +36,10 @@ namespace F1Api
                     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
                 }
             });
+
+            // Register validators
+            builder.Services.AddTransient<IValidator<YearRequest>, YearValidator>();
+            builder.Services.AddTransient<IValidator<IdRequest>, IdValidator>();
 
             // Register Repositories
             builder.Services.AddScoped<ICircuitRepository, CircuitRepository>();
