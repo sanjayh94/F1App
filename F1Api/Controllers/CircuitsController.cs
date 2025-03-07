@@ -56,7 +56,7 @@ namespace F1Api.Controllers
             return Ok(summaries);
         }
 
-        [HttpGet("summaries/{id}")]
+        [HttpGet("{id}/summaries")]
         public async Task<ActionResult<CircuitSummary>> GetCircuitSummaryById(int id)
         {
             // Create request model and validate

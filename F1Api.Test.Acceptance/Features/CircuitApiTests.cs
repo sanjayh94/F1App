@@ -116,7 +116,7 @@ namespace F1Api.Test.Acceptance.Features
         public async Task GetCircuitSummaryById_ReturnsCorrectCircuitSummary()
         {
             // Arrange & Act
-            var response = await _client.GetAsync("/api/circuits/summaries/1");
+            var response = await _client.GetAsync("/api/circuits/1/summaries");
 
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -137,7 +137,7 @@ namespace F1Api.Test.Acceptance.Features
         public async Task GetCircuitSummaryById_WithInvalidId_ReturnsNotFound()
         {
             // Arrange & Act
-            var response = await _client.GetAsync("/api/circuits/summaries/999");
+            var response = await _client.GetAsync("/api/circuits/999/summaries");
 
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));

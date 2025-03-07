@@ -6,7 +6,7 @@ A Formula 1 data API built in .NET 8 (C#). The App parses data from json files i
 - `/api/drivers` - Get all drivers with their respective teams and results
 - `/api/championships` - Get the championship summary for a given year
 
-The API shows summary data for each circuit and driver which can be reached at `/api/circuits/summary` and `/api/drivers/summary` respectively. The championship summary can be reached at `/api/championships/{year}`.
+The API shows summary data for each circuit and driver which can be reached at `/api/circuits/summaries` and `/api/drivers/summaries` respectively. The championship summary can be reached at `/api/championships/{year}`.
 
 The API also includes a Swagger UI for easy API testing and documentation.
 
@@ -52,13 +52,13 @@ Alternatively, the API can be reached using curl or any other HTTP client such a
 - Circuits
     - `/api/circuits` - Get all circuits with their respective races and results
     - `/api/circuits/{circuitId}` - Get a specific circuit by ID
-    - `/api/circuits/summary` - Get summary data for all circuits
-    - `/api/circuits/{circuitId}/summary` - Get summary data for a specific circuit
+    - `/api/circuits/summaries` - Get summary data for all circuits
+    - `/api/circuits/{circuitId}/summaries` - Get summary data for a specific circuit
 - Drivers
     - `/api/drivers` - Get all drivers with their respective teams and results
     - `/api/drivers/{driverId}` - Get a specific driver by ID
-    - `/api/drivers/summary` - Get summary data for all drivers
-    - `/api/drivers/{driverId}/summary` - Get summary data for a specific driver
+    - `/api/drivers/summaries` - Get summary data for all drivers
+    - `/api/drivers/{driverId}/summaries` - Get summary data for a specific driver
 - Championships
     - `/api/championships/{year}` - Get the championship summary for a given year
 - HealthCheck
