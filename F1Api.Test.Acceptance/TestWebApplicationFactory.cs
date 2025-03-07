@@ -112,10 +112,34 @@ namespace F1Api.Test.Acceptance
             };
 
             dbContext.Circuits.AddRange(testCircuits);
-            
+
             // Seed Drivers
             var testDrivers = new List<Driver>
             {
+                new Driver
+                {
+                    Id = 848,
+                    DriverReference = "albon",
+                    Number = 23,
+                    Code = "ALB",
+                    Forename = "Alexander",
+                    Surname = "Albon",
+                    DateOfBirth = new DateOnly(1996, 3, 23),
+                    Nationality = "Thai",
+                    Url = new Uri("https://example.com/albon")
+                },
+                new Driver
+                {
+                    Id = 832,
+                    DriverReference = "sainz",
+                    Number = 55,
+                    Code = "SAI",
+                    Forename = "Carlos",
+                    Surname = "Sainz",
+                    DateOfBirth = new DateOnly(1994, 9, 1),
+                    Nationality = "Spanish",
+                    Url = new Uri("https://example.com/sainz")
+                },
                 new Driver
                 {
                     Id = 1,
@@ -127,33 +151,9 @@ namespace F1Api.Test.Acceptance
                     DateOfBirth = new DateOnly(1985, 1, 7),
                     Nationality = "British",
                     Url = new Uri("https://example.com/hamilton")
-                },
-                new Driver
-                {
-                    Id = 2,
-                    DriverReference = "verstappen",
-                    Number = 1,
-                    Code = "VER",
-                    Forename = "Max",
-                    Surname = "Verstappen",
-                    DateOfBirth = new DateOnly(1997, 9, 30),
-                    Nationality = "Dutch",
-                    Url = new Uri("https://example.com/verstappen")
-                },
-                new Driver
-                {
-                    Id = 3,
-                    DriverReference = "leclerc",
-                    Number = 16,
-                    Code = "LEC",
-                    Forename = "Charles",
-                    Surname = "Leclerc",
-                    DateOfBirth = new DateOnly(1997, 10, 16),
-                    Nationality = "Monegasque",
-                    Url = new Uri("https://example.com/leclerc")
                 }
             };
-            
+
             dbContext.Drivers.AddRange(testDrivers);
             dbContext.SaveChanges();
         }

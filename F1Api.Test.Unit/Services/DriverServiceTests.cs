@@ -32,8 +32,8 @@ namespace F1Api.Test.Unit.Services
             // Arrange
             var expectedDrivers = new List<Driver>
             {
-                new Driver { Id = 1, Forename = "Lewis", Surname = "Hamilton", Nationality = "British" },
-                new Driver { Id = 2, Forename = "Max", Surname = "Verstappen", Nationality = "Dutch" }
+                new Driver { Id = 848, Forename = "Alexander", Surname = "Albon", Nationality = "Thai" },
+                new Driver { Id = 832, Forename = "Carlos", Surname = "Sainz", Nationality = "Spanish" }
             };
 
             _mockRepository.Setup(repo => repo.GetAllAsync())
@@ -44,7 +44,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(expectedDrivers.Count, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(expectedDrivers.Count));
             CollectionAssert.AreEquivalent(expectedDrivers, result);
         }
 
@@ -60,7 +60,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(0));
         }
 
         [Test]
@@ -73,22 +73,22 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllAsync());
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
 
         [Test]
         public async Task GetDriverByIdAsync_WithValidId_ShouldReturnDriver()
         {
             // Arrange
-            var driverId = 1;
+            var driverId = 848;
             var expectedDriver = new Driver
             {
                 Id = driverId,
-                Forename = "Lewis",
-                Surname = "Hamilton",
-                Nationality = "British",
-                Number = 44,
-                Code = "HAM"
+                Forename = "Alexander",
+                Surname = "Albon",
+                Nationality = "Thai",
+                Number = 23,
+                Code = "ALB"
             };
 
             _mockRepository.Setup(repo => repo.GetByIdAsync(driverId))
@@ -99,9 +99,9 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(driverId, result.Id);
-            Assert.AreEqual("Lewis", result.Forename);
-            Assert.AreEqual("Hamilton", result.Surname);
+            Assert.That(result.Id, Is.EqualTo(driverId));
+            Assert.That(result.Forename, Is.EqualTo("Alexander"));
+            Assert.That(result.Surname, Is.EqualTo("Albon"));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetByIdAsync(driverId));
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
 
         [Test]
@@ -139,17 +139,17 @@ namespace F1Api.Test.Unit.Services
             // Arrange
             var expectedSummaries = new List<DriverSummary>
             {
-                new DriverSummary { 
-                    DriverId = 1, 
-                    FullName = "Lewis Hamilton", 
-                    Nationality = "British",
-                    PodiumCount = 50,
-                    TotalRacesEntered = 100
+                new DriverSummary {
+                    DriverId = 848,
+                    FullName = "Alexander Albon",
+                    Nationality = "Thai",
+                    PodiumCount = 0,
+                    TotalRacesEntered = 1
                 },
-                new DriverSummary { 
-                    DriverId = 2, 
-                    FullName = "Max Verstappen", 
-                    Nationality = "Dutch",
+                new DriverSummary {
+                    DriverId = 832,
+                    FullName = "Carlos Sainz",
+                    Nationality = "Spanish",
                     PodiumCount = 50,
                     TotalRacesEntered = 100
                 }
@@ -163,7 +163,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(expectedSummaries.Count, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(expectedSummaries.Count));
             CollectionAssert.AreEquivalent(expectedSummaries, result);
         }
 
@@ -179,7 +179,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(0));
         }
 
         [Test]
@@ -192,19 +192,19 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummariesAsync());
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
 
         [Test]
         public async Task GetDriverSummaryByIdAsync_WithValidId_ShouldReturnDriverSummary()
         {
             // Arrange
-            var driverId = 1;
+            var driverId = 848;
             var expectedSummary = new DriverSummary
             {
                 DriverId = driverId,
-                FullName = "Lewis Hamilton",
-                Nationality = "British",
+                FullName = "Alexander Albon",
+                Nationality = "Thai",
                 PodiumCount = 50,
                 TotalRacesEntered = 100
             };
@@ -217,9 +217,10 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(driverId, result.DriverId);
-            Assert.AreEqual("Lewis Hamilton", result.FullName);
-            Assert.AreEqual(50, result.PodiumCount);
+            Assert.That(result.DriverId, Is.EqualTo(driverId));
+            Assert.That(result.FullName, Is.EqualTo("Alexander Albon"));
+            Assert.That(result.Nationality, Is.EqualTo("Thai"));
+            Assert.That(result.PodiumCount, Is.EqualTo(50));
         }
 
         [Test]
@@ -248,7 +249,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummaryByIdAsync(driverId));
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
     }
 }

@@ -39,7 +39,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(expectedCircuits.Count, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(expectedCircuits.Count));
             CollectionAssert.AreEquivalent(expectedCircuits, result);
         }
 
@@ -55,7 +55,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(0));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetAllAsync());
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
 
         [Test]
@@ -95,8 +95,8 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(circuitId, result.Id);
-            Assert.AreEqual("Monaco", result.Name);
+            Assert.That(result.Id, Is.EqualTo(circuitId));
+            Assert.That(result.Name, Is.EqualTo("Monaco"));
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetByIdAsync(circuitId));
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
         }
 
         [Test]
@@ -134,16 +134,16 @@ namespace F1Api.Test.Unit.Services
             // Arrange
             var expectedSummaries = new List<CircuitSummary>
             {
-                new CircuitSummary { 
-                    CircuitId = 1, 
-                    Name = "Monaco Circuit", 
+                new CircuitSummary {
+                    CircuitId = 1,
+                    Name = "Monaco Circuit",
                     Country = "Monaco",
                     FastestLapDriver = "Lewis Hamilton",
                     TotalRacesCompleted = 50
                 },
-                new CircuitSummary { 
-                    CircuitId = 2, 
-                    Name = "Silverstone Circuit", 
+                new CircuitSummary {
+                    CircuitId = 2,
+                    Name = "Silverstone Circuit",
                     Country = "United Kingdom",
                     FastestLapDriver = "Max Verstappen",
                     TotalRacesCompleted = 50
@@ -158,7 +158,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(expectedSummaries.Count, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(expectedSummaries.Count));
             CollectionAssert.AreEquivalent(expectedSummaries, result);
             _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
         }
@@ -175,7 +175,7 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(0, result.Count());
+            Assert.That(result.Count(), Is.EqualTo(0));
             _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
         }
 
@@ -189,7 +189,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummariesAsync());
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
             _mockRepository.Verify(repo => repo.GetSummariesAsync(), Times.Once);
         }
 
@@ -218,9 +218,9 @@ namespace F1Api.Test.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(circuitId, result.CircuitId);
-            Assert.AreEqual("Monaco Circuit", result.Name);
-            Assert.AreEqual("Lewis Hamilton", result.FastestLapDriver);
+            Assert.That(result.CircuitId, Is.EqualTo(circuitId));
+            Assert.That(result.Name, Is.EqualTo("Monaco Circuit"));
+            Assert.That(result.FastestLapDriver, Is.EqualTo("Lewis Hamilton"));
             _mockRepository.Verify(repo => repo.GetSummaryByIdAsync(circuitId), Times.Once);
         }
 
@@ -251,7 +251,7 @@ namespace F1Api.Test.Unit.Services
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<Exception>(() => _service.GetSummaryByIdAsync(circuitId));
-            Assert.AreEqual(expectedException.Message, ex.Message);
+            Assert.That(ex.Message, Is.EqualTo(expectedException.Message));
             _mockRepository.Verify(repo => repo.GetSummaryByIdAsync(circuitId), Times.Once);
         }
     }

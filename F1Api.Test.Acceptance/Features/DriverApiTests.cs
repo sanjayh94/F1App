@@ -43,28 +43,28 @@ namespace F1Api.Test.Acceptance.Features
 
             var drivers = await response.Content.ReadFromJsonAsync<List<Driver>>(_jsonOptions);
             Assert.That(drivers, Is.Not.Null);
-            Assert.That(drivers.Count, Is.GreaterThan(0)); 
-
+            Assert.That(drivers.Count, Is.EqualTo(3));
             Assert.That(drivers.Any(d => d.Surname == "Hamilton"), Is.True);
-            Assert.That(drivers.Any(d => d.Surname == "Verstappen"), Is.True);
+            Assert.That(drivers.Any(d => d.Surname == "Albon"), Is.True);
+            Assert.That(drivers.Any(d => d.Surname == "Sainz"), Is.True);
         }
 
         [Test]
         public async Task GetDriverById_ReturnsCorrectDriver()
         {
             // Arrange & Act
-            var response = await _client.GetAsync("/api/drivers/1");
+            var response = await _client.GetAsync("/api/drivers/848");
 
             // Assert
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
             var driver = await response.Content.ReadFromJsonAsync<Driver>(_jsonOptions);
             Assert.That(driver, Is.Not.Null);
-            Assert.That(driver.Id, Is.EqualTo(1));
+            Assert.That(driver.Id, Is.EqualTo(848));
 
-            Assert.That(driver.Forename, Is.EqualTo("Lewis"));
-            Assert.That(driver.Surname, Is.EqualTo("Hamilton"));
-            Assert.That(driver.Nationality, Is.EqualTo("British"));
+            Assert.That(driver.Forename, Is.EqualTo("Alexander"));
+            Assert.That(driver.Surname, Is.EqualTo("Albon"));
+            Assert.That(driver.Nationality, Is.EqualTo("Thai"));
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace F1Api.Test.Acceptance.Features
 
             // Verify full names for each summary
             Assert.That(summaries.Any(s => s.FullName.Contains("Hamilton")), Is.True);
-            Assert.That(summaries.Any(s => s.FullName.Contains("Verstappen")), Is.True);
+            Assert.That(summaries.Any(s => s.FullName.Contains("Carlos")), Is.True);
 
             // Verify summary properties exist on each driver
             foreach (var summary in summaries)

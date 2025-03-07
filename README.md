@@ -88,11 +88,31 @@ The .NET Solution is structured as follows:
 - `F1Api` - The main API project
 - `F1Api.Test.Unit` - The unit test project
 - `F1Api.Test.Acceptance` - The acceptance test project
-
+- `F1Api.Test.Integration` - The integration test project
 ## How to Run Tests
+
+### Running all tests
 
 ```bash
 dotnet test
+```
+
+### Running Unit Tests
+
+```bash
+dotnet test F1Api.Test.Unit
+```
+
+### Running Acceptance Tests
+
+```bash
+dotnet test F1Api.Test.Acceptance
+```
+
+### Running Integration Tests
+
+```bash
+dotnet test F1Api.Test.Integration
 ```
 
 ## Unit Tests
@@ -105,9 +125,15 @@ The Acceptance tests are also written using NUnit and are located in the `F1Api.
 
 The acceptance tests are designed to seed and create it's own state. Currently, the tests replaces the DBContext with a mock instance of the DBContext to avoid writing to the actual database and instead writes to an in-memory database. Ideally, the tests should run on another acceptance test database to avoid any potential side effects.
 
-## Integration Tests and Smoke Tests
+## Integration Tests
 
-Integration tests and Smoke tests are not implemented in this project as the application is not deployed. However, the project is designed with a testable architecture and could be easily extended to include integration and smoke tests.
+The Integration tests are written using NUnit and are located in the `F1Api.Test.Integration` project. The tests are designed to test the API integration, which in this case is the API's ability to read data from the database.
+
+The integration tests are designed to test against the postgres database. The database will need to be running before the tests are run.
+
+## Smoke Tests
+
+Smoke tests are not implemented in this project as the application is not deployed. However, the project is designed with a testable architecture and could be easily extended to include smoke tests.
 
 ## Troubleshooting
 
