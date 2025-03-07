@@ -12,22 +12,16 @@ namespace F1Api.Test.Integration
         {
             builder.ConfigureAppConfiguration((context, config) =>
             {
-                // Create a new configuration with the connection string to the real database
                 var projectDir = Directory.GetCurrentDirectory();
                 var configPath = Path.Combine(projectDir, "appsettings.json");
 
                 config.AddJsonFile(configPath);
 
-                // Ensure we're not using an in-memory database
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    ["UseInMemoryDatabase"] = "false"
+                    ["UseInMemoryDatabase"] = "false",
+                    ["ConnectionStrings:DefaultConnection"] = "Host=localhost;Port=5432;Database=f1db;Username=f1user;Password=f1password"
                 });
-            });
-
-            builder.ConfigureServices(services =>
-            {
-                // Any additional service configuration for testing can go here
             });
         }
     }

@@ -41,6 +41,7 @@ namespace F1Api.Test.Acceptance
 
                 services.AddScoped<ICircuitRepository, CircuitRepository>();
                 services.AddScoped<IDriverRepository, DriverRepository>();
+                services.AddScoped<IChampionshipRepository, ChampionshipRepository>();
 
                 // Build the service provider to resolve scoped services
                 var sp = services.BuildServiceProvider();
@@ -50,15 +51,14 @@ namespace F1Api.Test.Acceptance
                 var logger = scopedServices
                     .GetRequiredService<ILogger<TestWebApplicationFactory>>();
 
-                db.Database.EnsureCreated();
-
                 try
                 {
+                    db.Database.EnsureCreated();
                     SeedTestData(db);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "An error occurred seeding the database. Error: {Message}", ex.Message);
+                    logger.LogError(ex, "An error occurred seeding the database with test data. Error: {Message}", ex.Message);
                 }
             });
         }
@@ -70,6 +70,14 @@ namespace F1Api.Test.Acceptance
             if (dbContext.Drivers != null)
             {
                 dbContext.Drivers.RemoveRange(dbContext.Drivers);
+            }
+            if (dbContext.Races != null)
+            {
+                dbContext.Races.RemoveRange(dbContext.Races);
+            }
+            if (dbContext.DriverStandings != null)
+            {
+                dbContext.DriverStandings.RemoveRange(dbContext.DriverStandings);
             }
             dbContext.SaveChanges();
 
@@ -155,6 +163,171 @@ namespace F1Api.Test.Acceptance
             };
 
             dbContext.Drivers.AddRange(testDrivers);
+
+            // Seed Races
+            var testRaces = new List<Race>
+            {
+                new Race
+                {
+                    Id = 1,
+                    Year = 2025,
+                    Round = 1,
+                    CircuitId = 1,
+                    Name = "Monaco Grand Prix",
+                    Date = new DateOnly(2025, 5, 28)
+                },
+                new Race
+                {
+                    Id = 2,
+                    Year = 2025,
+                    Round = 2,
+                    CircuitId = 2,
+                    Name = "British Grand Prix",
+                    Date = new DateOnly(2025, 7, 9)
+                },
+                new Race
+                {
+                    Id = 3,
+                    Year = 2026,
+                    Round = 1,
+                    CircuitId = 1,
+                    Name = "Monaco Grand Prix",
+                    Date = new DateOnly(2026, 5, 26)
+                },
+                new Race
+                {
+                    Id = 4,
+                    Year = 2026,
+                    Round = 2,
+                    CircuitId = 2,
+                    Name = "British Grand Prix",
+                    Date = new DateOnly(2026, 7, 7)
+                }
+            };
+
+            dbContext.Races.AddRange(testRaces);
+
+            // Seed Driver Standings 
+            var testDriverStandings = new List<DriverStanding>
+            {
+                // 2025 - Race 1 standings
+                new DriverStanding
+                {
+                    Id = 1,
+                    RaceId = 1,
+                    DriverId = 1, // Hamilton
+                    Points = 25,
+                    Position = 1,
+                    Wins = 1
+                },
+                new DriverStanding
+                {
+                    Id = 2,
+                    RaceId = 1,
+                    DriverId = 832, // Sainz
+                    Points = 18,
+                    Position = 2,
+                    Wins = 0
+                },
+                new DriverStanding
+                {
+                    Id = 3,
+                    RaceId = 1,
+                    DriverId = 848, // Albon
+                    Points = 15,
+                    Position = 3,
+                    Wins = 0
+                },
+                
+                // 2025 - Race 2 standings
+                new DriverStanding
+                {
+                    Id = 4,
+                    RaceId = 2,
+                    DriverId = 1, // Hamilton
+                    Points = 43,
+                    Position = 1,
+                    Wins = 1
+                },
+                new DriverStanding
+                {
+                    Id = 5,
+                    RaceId = 2,
+                    DriverId = 832, // Sainz
+                    Points = 40,
+                    Position = 2,
+                    Wins = 1
+                },
+                new DriverStanding
+                {
+                    Id = 6,
+                    RaceId = 2,
+                    DriverId = 848, // Albon
+                    Points = 33,
+                    Position = 3,
+                    Wins = 0
+                },
+                
+                // 2026 - Race 1 standings
+                new DriverStanding
+                {
+                    Id = 7,
+                    RaceId = 3,
+                    DriverId = 848, // Albon
+                    Points = 25,
+                    Position = 1,
+                    Wins = 1
+                },
+                new DriverStanding
+                {
+                    Id = 8,
+                    RaceId = 3,
+                    DriverId = 832, // Sainz
+                    Points = 18,
+                    Position = 2,
+                    Wins = 0
+                },
+                new DriverStanding
+                {
+                    Id = 9,
+                    RaceId = 3,
+                    DriverId = 1, // Hamilton
+                    Points = 15,
+                    Position = 3,
+                    Wins = 0
+                },
+                
+                // 2026 - Race 2 standings
+                new DriverStanding
+                {
+                    Id = 10,
+                    RaceId = 4,
+                    DriverId = 848, // Albon
+                    Points = 50,
+                    Position = 1,
+                    Wins = 2
+                },
+                new DriverStanding
+                {
+                    Id = 11,
+                    RaceId = 4,
+                    DriverId = 1, // Hamilton
+                    Points = 33,
+                    Position = 2,
+                    Wins = 0
+                },
+                new DriverStanding
+                {
+                    Id = 12,
+                    RaceId = 4,
+                    DriverId = 832, // Sainz
+                    Points = 33,
+                    Position = 3,
+                    Wins = 0
+                }
+            };
+
+            dbContext.DriverStandings.AddRange(testDriverStandings);
             dbContext.SaveChanges();
         }
     }

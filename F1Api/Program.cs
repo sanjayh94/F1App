@@ -36,10 +36,12 @@ namespace F1Api
             // Register Repositories
             builder.Services.AddScoped<ICircuitRepository, CircuitRepository>();
             builder.Services.AddScoped<IDriverRepository, DriverRepository>();
+            builder.Services.AddScoped<IChampionshipRepository, ChampionshipRepository>();
 
             // Register Services
             builder.Services.AddScoped<ICircuitService, CircuitService>();
             builder.Services.AddScoped<IDriverService, DriverService>();
+            builder.Services.AddScoped<IChampionshipService, ChampionshipService>();
             builder.Services.AddScoped<MigrationService>();
 
             builder.Services.AddEndpointsApiExplorer();

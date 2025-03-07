@@ -4,8 +4,9 @@ A Formula 1 data API built in .NET 8 (C#). The App parses data from json files i
 
 - `/api/circuits` - Get all circuits with their respective races and results
 - `/api/drivers` - Get all drivers with their respective teams and results
+- `/api/championships` - Get the championship summary for a given year
 
-The API shows summary data for each circuit and driver which can be reached at `/api/circuits/summary` and `/api/drivers/summary` respectively.
+The API shows summary data for each circuit and driver which can be reached at `/api/circuits/summary` and `/api/drivers/summary` respectively. The championship summary can be reached at `/api/championships/{year}`.
 
 The API also includes a Swagger UI for easy API testing and documentation.
 
@@ -58,6 +59,8 @@ Alternatively, the API can be reached using curl or any other HTTP client such a
     - `/api/drivers/{driverId}` - Get a specific driver by ID
     - `/api/drivers/summary` - Get summary data for all drivers
     - `/api/drivers/{driverId}/summary` - Get summary data for a specific driver
+- Championships
+    - `/api/championships/{year}` - Get the championship summary for a given year
 - HealthCheck
     - `/health` - Get the health of the API
 
